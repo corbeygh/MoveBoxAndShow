@@ -89,10 +89,6 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    //Test: some changes
-    //Test: More Changes - testing with branch
-    //testme - collisions doneegerg
-    //ergerg
 
 
     private void updateReady () {
@@ -101,6 +97,7 @@ public class GameScreen extends ScreenAdapter {
             resumeSystems();
         }
     }
+    //as
 
     private void updateRunning(float deltaTime){
         //if user clicks pause button, pause systems.
