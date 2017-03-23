@@ -63,10 +63,9 @@ public class World {
         animation.animations.put(StateComponent.ANIMATION_JUMP, Assets.playerStationary);
         animation.animations.put(StateComponent.ANIMATION_FALL, Assets.playerStationary);
 
-
-
         bounds.bounds.width = PlayerComponent.WIDTH;
         bounds.bounds.height = PlayerComponent.HEIGHT;
+
         position.position.set(1.0f, 1.0f, 0.0f);        //Starting cord
 
         //default starting animation

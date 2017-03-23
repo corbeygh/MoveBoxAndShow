@@ -41,7 +41,6 @@ public class MovementSystem extends IteratingSystem {
 
         Vector2 vector = new Vector2();
 
-
         //calculate change in velocity using acceleration
         vector.set(mov.acceleration).scl(deltaTime); // scale by deltaTime
         //update current velocity variable
@@ -50,12 +49,11 @@ public class MovementSystem extends IteratingSystem {
         //calculate change in position using velocity
         vector.set(mov.velocity).scl(deltaTime);
 
-
+        //update current position variable
         position.lastPosition.set(position.position);
         position.position.add(vector.x, vector.y, 0.0f);
 
         setAnimationState(mov.velocity.x, mov.velocity.y, state); //set Animation state based on the direction of travel
-//update current position variable
     }
 
     private void setAnimationState(float x, float y, StateComponent state) {
