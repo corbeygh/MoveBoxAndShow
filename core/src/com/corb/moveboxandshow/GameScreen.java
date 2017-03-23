@@ -6,13 +6,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.corb.moveboxandshow.systems.CollisionSystem;
 import com.corb.moveboxandshow.systems.InputSystem;
 import com.corb.moveboxandshow.systems.MovementSystem;
 import com.corb.moveboxandshow.systems.PlayerSystem;
 import com.corb.moveboxandshow.systems.StateSystem;
-import com.corb.moveboxandshow.systems.rendering.AnimationSystem;
-import com.corb.moveboxandshow.systems.rendering.CameraSystem;
-import com.corb.moveboxandshow.systems.rendering.RenderingSystem;
+import com.corb.moveboxandshow.systems.AnimationSystem;
+import com.corb.moveboxandshow.systems.CameraSystem;
+import com.corb.moveboxandshow.systems.RenderingSystem;
+import com.corb.moveboxandshow.systems.BlockSystem;
 
 
 public class GameScreen extends ScreenAdapter {
@@ -47,12 +49,16 @@ public class GameScreen extends ScreenAdapter {
 
         //Add Systems:
 
-        engine.addSystem(new PlayerSystem(world));
-        engine.addSystem(new CameraSystem());
-        engine.addSystem(new InputSystem(controller));
+        engine.addSystem(new PlayerSystem());
+        engine.addSystem(new BlockSystem());
         engine.addSystem(new MovementSystem());
+        engine.addSystem(new CollisionSystem(world));
+
+        engine.addSystem(new InputSystem(controller));
+
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());
+        engine.addSystem(new CameraSystem());
         engine.addSystem(new RenderingSystem(game.batch));
 
         world.create();
@@ -88,12 +94,6 @@ public class GameScreen extends ScreenAdapter {
                 break;
         }
     }
-
-    //Test: some changes
-    //Test: More Changes - testing with branch
-    //testme - collisions doneegerg
-    //ergerg
-
 
     private void updateReady () {
         if (Gdx.input.justTouched()) {

@@ -1,7 +1,6 @@
 package com.corb.moveboxandshow.components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by Calvin on 22/03/2017.
@@ -10,11 +9,11 @@ import com.badlogic.gdx.math.Vector2;
 public class PlayerComponent implements Component {
 
     public static final float JUMP_VELOCITY = 1;
-    public static final float MOVE_VELOCITY = 1;
+    public static final float MOVE_VELOCITY = 5;
     public static final float STATIONARY_VELOCITY = 0;
 
-    public static final float WIDTH = 0.8f;
-    public static final float HEIGHT = 0.8f;
+    public static final float WIDTH = 1f;
+    public static final float HEIGHT = 1f;
 
     //States
     public static final int STATE_JUMP = 0;

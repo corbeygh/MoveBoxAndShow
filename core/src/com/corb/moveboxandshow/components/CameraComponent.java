@@ -1,4 +1,4 @@
-package com.corb.moveboxandshow.components.rendering;
+package com.corb.moveboxandshow.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;

@@ -1,4 +1,4 @@
-package com.corb.moveboxandshow.systems.rendering;
+package com.corb.moveboxandshow.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -8,9 +8,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.corb.moveboxandshow.Assets;
-import com.corb.moveboxandshow.components.rendering.TextureComponent;
+import com.corb.moveboxandshow.components.TextureComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
 
 import java.util.Comparator;

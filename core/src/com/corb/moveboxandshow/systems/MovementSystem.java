@@ -43,6 +43,7 @@ public class MovementSystem extends IteratingSystem {
         vector.set(mov.velocity).scl(deltaTime);
 
         //update current position variable
+        position.lastPosition.set(position.position);
         position.position.add(vector.x, vector.y, 0.0f);
     }
 

@@ -1,10 +1,10 @@
-package com.corb.moveboxandshow.systems.rendering;
+package com.corb.moveboxandshow.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.corb.moveboxandshow.components.rendering.CameraComponent;
+import com.corb.moveboxandshow.components.CameraComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
 
 /**
@@ -37,6 +37,11 @@ public class CameraSystem extends IteratingSystem {
             return;
         }
 
-        cam.camera.position.y = Math.max(cam.camera.position.y, target.position.y);
+        cam.camera.position.y = target.position.y;
+        cam.camera.position.x = target.position.x;
+
+//        cam.camera.position.y = Math.max(cam.camera.position.y, target.position.y);
+
+
     }
 }
