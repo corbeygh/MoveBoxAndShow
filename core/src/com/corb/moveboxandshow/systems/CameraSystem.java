@@ -37,11 +37,9 @@ public class CameraSystem extends IteratingSystem {
             return;
         }
 
+        //Follows Player
         cam.camera.position.y = target.position.y;
         cam.camera.position.x = target.position.x;
-
-//        cam.camera.position.y = Math.max(cam.camera.position.y, target.position.y);
-
 
     }
 }

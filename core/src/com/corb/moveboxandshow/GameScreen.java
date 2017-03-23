@@ -84,7 +84,6 @@ public class GameScreen extends ScreenAdapter {
 
         //A Switch state is used to adjust which Systems are active based on the Game State
         //Eg a pause would set all Player movement systems to false... ect
-
         switch (state) {
             case GAME_READY:
                 updateReady();

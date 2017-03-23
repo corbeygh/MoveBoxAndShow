@@ -107,17 +107,11 @@ public class CollisionSystem extends EntitySystem {
                         blockBounds.bounds.getHeight());
 
                 if (playerRect.overlaps(blockRect)) {
-
                     //TODO TEST and set velocity to zero for player
                     //Moves Player back to last position (before the collision)
                     playerPos.position.set(playerPos.lastPosition);
 
                 }
-
-                //depending on which side they are closest to, teleport them to that location
-
-                //Collision is True!
-
             }
 
         }
