@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.corb.moveboxandshow.systems.InputSystem;
 import com.corb.moveboxandshow.systems.MovementSystem;
 import com.corb.moveboxandshow.systems.PlayerSystem;
@@ -15,9 +14,6 @@ import com.corb.moveboxandshow.systems.rendering.AnimationSystem;
 import com.corb.moveboxandshow.systems.rendering.CameraSystem;
 import com.corb.moveboxandshow.systems.rendering.RenderingSystem;
 
-/**
- * Created by Calvin on 22/03/2017.
- */
 
 public class GameScreen extends ScreenAdapter {
     private static final int GAME_READY = 0;
@@ -73,7 +69,7 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
-    public void update(float deltaTime){
+    private void update(float deltaTime){
         if (deltaTime > 0.1f) deltaTime = 0.1f;
 
         //Handles updating all the Active Systems
@@ -93,6 +89,8 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    //Test: some changes
+    //Test: More Changes - testing with branch
 
 
     private void updateReady () {
@@ -106,7 +104,7 @@ public class GameScreen extends ScreenAdapter {
         //if user clicks pause button, pause systems.
     }
 
-    public void drawUI () {
+    private void drawUI () {
         //Dependent on the device Render:
         if(Gdx.app.getType() == Application.ApplicationType.Android) {
             controller.draw();
