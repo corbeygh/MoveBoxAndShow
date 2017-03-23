@@ -21,6 +21,9 @@ public class StateSystem extends IteratingSystem {
 
     @Override
     public void processEntity(Entity entity, float deltaTime) {
+
+        sm.get(entity).animationTime += deltaTime;
+        sm.get(entity).actionTime += deltaTime;
         sm.get(entity).time += deltaTime;
     }
 }
