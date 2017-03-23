@@ -32,7 +32,7 @@ public class World {
     }
 
     public void create(){
-        Entity player = createRobo();
+        Entity player = createPlayer();
         createCamera(player);
 
         int amountOfBlocks = 5;
@@ -41,7 +41,7 @@ public class World {
         }
     }
 
-    private Entity createRobo() {
+    private Entity createPlayer() {
         Entity entity = engine.createEntity();
 
         AnimationComponent animation = engine.createComponent(AnimationComponent.class);
@@ -53,14 +53,24 @@ public class World {
         StateComponent state = engine.createComponent(StateComponent.class);
         UserInputComponent input = engine.createComponent(UserInputComponent.class);
 
-        animation.animations.put(PlayerComponent.STATE_STATIONARY, Assets.blackBox);
+        //Animations - Mapping state numbers to Assets
+        animation.animations.put(StateComponent.ANIMATION_STATIONARY, Assets.playerStationary);
+        animation.animations.put(StateComponent.ANIMATION_STATIONARY_WALK_LEFT, Assets.playerStationaryLeft);
+        animation.animations.put(StateComponent.ANIMATION_STATIONARY_WALK_RIGHT, Assets.playerStationaryRight);
+
+        animation.animations.put(StateComponent.ANIMATION_WALK_LEFT, Assets.playerWalkLeft);
+        animation.animations.put(StateComponent.ANIMATION_WALK_RIGHT, Assets.playerWalkRight);
+        animation.animations.put(StateComponent.ANIMATION_JUMP, Assets.playerStationary);
+        animation.animations.put(StateComponent.ANIMATION_FALL, Assets.playerStationary);
+
+
 
         bounds.bounds.width = PlayerComponent.WIDTH;
         bounds.bounds.height = PlayerComponent.HEIGHT;
+        position.position.set(1.0f, 1.0f, 0.0f);        //Starting cord
 
-        position.position.set(1.0f, 1.0f, 0.0f);
-
-        state.set(PlayerComponent.STATE_STATIONARY);
+        //default starting animation
+        state.setAnimationState(state.getAnimationState());
 
         entity.add(animation);
         entity.add(player);
@@ -100,14 +110,14 @@ public class World {
         StateComponent state = engine.createComponent(StateComponent.class);
         UserInputComponent input = engine.createComponent(UserInputComponent.class);
 
-        animation.animations.put(BlockComponent.STATE_STATIONARY, Assets.blackBox);
+        animation.animations.put(StateComponent.ANIMATION_STATIONARY, Assets.blackBox);
 
         bounds.bounds.width = BlockComponent.WIDTH;
         bounds.bounds.height = BlockComponent.HEIGHT;
 
         position.position.set(posX, posY, 0.0f);
 
-        state.set(BlockComponent.STATE_STATIONARY);
+        state.setAnimationState(state.getAnimationState());
 
         entity.add(animation);
         entity.add(block);

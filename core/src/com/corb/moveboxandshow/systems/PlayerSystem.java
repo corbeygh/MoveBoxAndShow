@@ -69,6 +69,7 @@ public class PlayerSystem extends IteratingSystem {
         } else{
             mov.velocity.y = 0;
         }
+
     }
 
 
