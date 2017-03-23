@@ -1,4 +1,4 @@
-package com.corb.moveboxandshow.systems.rendering;
+package com.corb.moveboxandshow.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -6,8 +6,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.corb.moveboxandshow.components.StateComponent;
-import com.corb.moveboxandshow.components.rendering.AnimationComponent;
-import com.corb.moveboxandshow.components.rendering.TextureComponent;
+import com.corb.moveboxandshow.components.AnimationComponent;
+import com.corb.moveboxandshow.components.TextureComponent;
 
 /**
  * Created by Calvin on 9/03/2017.

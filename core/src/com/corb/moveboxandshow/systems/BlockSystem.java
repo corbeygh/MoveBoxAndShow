@@ -7,14 +7,14 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.corb.moveboxandshow.components.PlayerComponent;
 import com.corb.moveboxandshow.components.UserInputComponent;
 import com.corb.moveboxandshow.components.MovementComponent;
-import com.corb.moveboxandshow.components.StateComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
+import com.corb.moveboxandshow.components.StateComponent;
 
 /**
- * Created by Calvin on 22/03/2017.
+ * Created by Calvin on 23/03/2017.
  */
 
-public class PlayerSystem extends IteratingSystem {
+public class BlockSystem extends IteratingSystem {
 
     private static final Family family = Family.all(PlayerComponent.class,
             UserInputComponent.class,
@@ -28,7 +28,7 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> tm;
     private ComponentMapper<MovementComponent> mm;
 
-    public PlayerSystem() {
+    public BlockSystem() {
         super(family);
 
         pm = ComponentMapper.getFor(PlayerComponent.class);
@@ -38,38 +38,10 @@ public class PlayerSystem extends IteratingSystem {
         mm = ComponentMapper.getFor(MovementComponent.class);
     }
 
-    @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
 
-    }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        PlayerComponent player = pm.get(entity);
-        UserInputComponent userInput = ui.get(entity);
-        StateComponent state = sm.get(entity);
-        TransformComponent pos = tm.get(entity);
-        MovementComponent mov = mm.get(entity);
 
-        System.out.println("x "+pos.position.x+ " y "+pos.position.y);
-        //Based on what state the player is in process their input:
-        if(userInput.moveLeft){
-            mov.velocity.x = -1 * PlayerComponent.MOVE_VELOCITY;
-        } else if(userInput.moveRight){
-            mov.velocity.x = PlayerComponent.MOVE_VELOCITY;
-        } else{
-            mov.velocity.x = 0;
-        }
-
-        if (userInput.moveUp) {
-            mov.velocity.y = PlayerComponent.MOVE_VELOCITY;
-        } else if(userInput.moveDown){
-            mov.velocity.y = -1 * PlayerComponent.MOVE_VELOCITY;
-        } else{
-            mov.velocity.y = 0;
-        }
     }
-
-
 }

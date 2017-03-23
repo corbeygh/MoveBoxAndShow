@@ -4,11 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.math.Vector2;
 import com.corb.moveboxandshow.Controller;
-import com.corb.moveboxandshow.components.MovementComponent;
-import com.corb.moveboxandshow.components.PlayerComponent;
-import com.corb.moveboxandshow.components.TransformComponent;
 import com.corb.moveboxandshow.components.UserInputComponent;
 
 /**
