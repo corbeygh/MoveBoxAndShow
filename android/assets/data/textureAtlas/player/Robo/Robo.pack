@@ -1,0 +1,40 @@
+
+Robo.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+deployArm
+  rotate: false
+  xy: 1, 133
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+deployDrill
+  rotate: false
+  xy: 1, 67
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+drillAnimation
+  rotate: false
+  xy: 259, 133
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+walkAnimation
+  rotate: false
+  xy: 1, 1
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+Robot_Stationary
+  rotate: false
+  xy: 259, 99
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
