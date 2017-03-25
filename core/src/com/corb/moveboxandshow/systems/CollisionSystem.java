@@ -95,18 +95,23 @@ public class CollisionSystem extends EntitySystem {
                 //test for collision
                 //Rectangle: Player and Block = their Bounds + Position.
                 Rectangle playerRect = new Rectangle(
-                        playerBounds.bounds.getX() + playerPos.position.x,
-                        playerBounds.bounds.getY() + playerPos.position.y,
+                        playerPos.position.x  ,
+                        playerPos.position.y ,
                         playerBounds.bounds.getWidth(),
                         playerBounds.bounds.getHeight());
 
+
+
                 Rectangle blockRect = new Rectangle(
-                        blockBounds.bounds.getX() + blockPos.position.x,
-                        blockBounds.bounds.getY() + blockPos.position.y,
-                        blockBounds.bounds.getWidth(),
+                        blockPos.position.x  , //- blockBounds.bounds.getWidth()
+                        blockPos.position.y  ,
+                        blockBounds.bounds.getWidth() -  playerBounds.bounds.getWidth()/4,
                         blockBounds.bounds.getHeight());
 
-                if (playerRect.overlaps(blockRect)) {
+                //Rectangle: Player and Block = their Bounds + Position.
+
+
+                if (playerRect.overlaps(blockRect)  ) {
                     //TODO TEST and set velocity to zero for player
                     //Moves Player back to last position (before the collision)
                     playerPos.position.set(playerPos.lastPosition);

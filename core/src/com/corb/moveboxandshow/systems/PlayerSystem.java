@@ -52,7 +52,8 @@ public class PlayerSystem extends IteratingSystem {
         TransformComponent pos = tm.get(entity);
         MovementComponent mov = mm.get(entity);
 
-        System.out.println("x "+pos.position.x+ " y "+pos.position.y);
+//        System.out.println("x "+pos.position.x+ " y "+pos.position.y);
+
         //Based on what state the player is in process their input:
         if(userInput.moveLeft){
             mov.velocity.x = -1 * PlayerComponent.MOVE_VELOCITY;
