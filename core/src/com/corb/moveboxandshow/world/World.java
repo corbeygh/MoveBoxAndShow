@@ -1,8 +1,11 @@
-package com.corb.moveboxandshow;
+package com.corb.moveboxandshow.world;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.corb.moveboxandshow.Assets;
 import com.corb.moveboxandshow.components.PlayerComponent;
+import com.corb.moveboxandshow.components.RemovableComponent;
+import com.corb.moveboxandshow.components.TilePositionComponent;
 import com.corb.moveboxandshow.components.UserInputComponent;
 import com.corb.moveboxandshow.components.MovementComponent;
 import com.corb.moveboxandshow.components.BlockComponent;
@@ -15,30 +18,47 @@ import com.corb.moveboxandshow.components.TextureComponent;
 import com.corb.moveboxandshow.systems.RenderingSystem;
 
 /**
- * Created by Calvin on 22/03/2017.
+ * Responsible for creating Entities
  */
 
 public class World {
 
-    public static final float WORLD_WIDTH = RenderingSystem.RENDERING_DISTANCE_WIDTH;
-    public static final float WORLD_HEIGHT = RenderingSystem.RENDERING_DISTANCE_HEIGHT * 20;
+    public static final int WORLD_WIDTH = 64;
+    public static final int WORLD_HEIGHT = 64;
+    public static final float PLAYER_START_X = 155f;
+    public static final float PLAYER_START_Y = 130 + 32f;
+
+    public static final float EDGE_NORTH = 128f + WORLD_HEIGHT; //TOP
+    public static final float EDGE_SOUTH = 128f; //BOT
+
+    public static final float EDGE_EAST = 128f + WORLD_WIDTH; //RIGHT
+    public static final float EDGE_WEST = 128f; //LEFT
 
     private PooledEngine engine;
+    private Entity player;
+    private WorldManager worldManager;
 
-    public World(PooledEngine engine){
+    public World(PooledEngine engine) {
         this.engine = engine;
-
-
     }
 
-    public void create(){
-        Entity player = createPlayer();
-        createCamera(player);
+    Entity[] blocks;
 
-        int amountOfBlocks = 5;
-        for(int i = 0; i <amountOfBlocks; i++){
-            createBlock(1+i*2.5f,3);
-        }
+    public void create() {
+        this.player = createPlayer();
+        createCamera(this.player);
+        worldManager = new WorldManager(this.player, this.engine);
+
+
+//        blocks = new Entity[5];
+//        for(int i = 0; i < blocks.length; i++){
+//            blocks[i] = createBlock(engine,100+i,99);
+//        }
+    }
+
+    public void update() {
+        if (worldManager != null)
+            worldManager.update();
     }
 
     private Entity createPlayer() {
@@ -52,6 +72,7 @@ public class World {
         TextureComponent texture = engine.createComponent(TextureComponent.class);
         StateComponent state = engine.createComponent(StateComponent.class);
         UserInputComponent input = engine.createComponent(UserInputComponent.class);
+        TilePositionComponent tilePos = engine.createComponent(TilePositionComponent.class);
 
         //Animations - Mapping state numbers to Assets
         animation.animations.put(StateComponent.ANIMATION_STATIONARY, Assets.playerStationary);
@@ -66,7 +87,7 @@ public class World {
         bounds.bounds.width = PlayerComponent.WIDTH;
         bounds.bounds.height = PlayerComponent.HEIGHT;
 
-        position.position.set(1.0f, 1.0f, 0.0f);        //Starting cord
+        position.position.set(PLAYER_START_X, PLAYER_START_Y, 0.0f);        //Starting cord
 
         //default starting animation
         state.setAnimationState(state.getAnimationState());
@@ -79,6 +100,7 @@ public class World {
         entity.add(position);
         entity.add(state);
         entity.add(texture);
+        entity.add(tilePos);
 
         engine.addEntity(entity);
 
@@ -97,7 +119,7 @@ public class World {
         engine.addEntity(entity);
     }
 
-    private void createBlock(float posX, float posY){
+    private Entity createBlock(PooledEngine engine, int posX, int posY) {
         Entity entity = engine.createEntity();
 
         AnimationComponent animation = engine.createComponent(AnimationComponent.class);
@@ -108,6 +130,7 @@ public class World {
         TextureComponent texture = engine.createComponent(TextureComponent.class);
         StateComponent state = engine.createComponent(StateComponent.class);
         UserInputComponent input = engine.createComponent(UserInputComponent.class);
+        RemovableComponent removable = engine.createComponent(RemovableComponent.class);
 
         animation.animations.put(StateComponent.ANIMATION_STATIONARY, Assets.blackBox);
 
@@ -126,9 +149,11 @@ public class World {
         entity.add(position);
         entity.add(state);
         entity.add(texture);
+        entity.add(removable);
 
         engine.addEntity(entity);
 
+        return entity;
     }
 
 }
