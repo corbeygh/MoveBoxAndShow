@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.corb.moveboxandshow.components.AnimationComponent;
 
 /**
  * Created by Calvin on 22/03/2017.
@@ -25,6 +26,8 @@ public class Assets {
     public static Animation playerWalkRight;
     public static Animation playerJump;
     public static Animation playerFall;
+    public static Animation playerMiningLeft;
+    public static Animation playerMiningRight;
 
 
     public static void load() {
@@ -44,18 +47,18 @@ public class Assets {
 
 
         playerWalkLeft = new Animation(0.2f,
-                new TextureRegion(atlas.findRegion("Miner_Walking_left00")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left01")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left02")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left03")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left04")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left05")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left06")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left07")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left08")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left09")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left10")),
-                new TextureRegion(atlas.findRegion("Miner_Walking_left11"))
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left00")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left01")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left02")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left03")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left04")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left05")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left06")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left07")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left08")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left09")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left10")),
+                new TextureRegion(atlas.findRegion("Miner_Walking_Left11"))
         );
 
         playerWalkRight = new Animation(0.2f,
@@ -76,6 +79,22 @@ public class Assets {
         playerJump = new Animation(0.2f, new TextureRegion(atlas.findRegion("Miner_Stationary")));
         playerFall = new Animation(0.2f, new TextureRegion(atlas.findRegion("Miner_Stationary")));
 
+        playerMiningLeft = new Animation(0.2f,
+                new TextureRegion(atlas.findRegion("Miner_Mining_Left0")),
+                new TextureRegion(atlas.findRegion("Miner_Mining_Left1")),
+                new TextureRegion(atlas.findRegion("Miner_Mining_Left2")),
+                new TextureRegion(atlas.findRegion("Miner_Mining_Left3"))
+
+                );
+
+        playerMiningRight = new Animation(0.2f,
+                new TextureRegion(atlas.findRegion("Miner_Mining_Right0")),
+                new TextureRegion(atlas.findRegion("Miner_Mining_Right1")),
+                new TextureRegion(atlas.findRegion("Miner_Mining_Right2")),
+                new TextureRegion(atlas.findRegion("Miner_Mining_Right3"))
+
+        );
+
         playerStationary.setPlayMode(Animation.PlayMode.LOOP);
         playerStationaryLeft.setPlayMode(Animation.PlayMode.LOOP);
         playerStationaryRight.setPlayMode(Animation.PlayMode.LOOP);
@@ -84,6 +103,9 @@ public class Assets {
         playerWalkRight.setPlayMode(Animation.PlayMode.LOOP);
         playerJump.setPlayMode(Animation.PlayMode.LOOP);
         playerFall.setPlayMode(Animation.PlayMode.LOOP);
+
+        playerMiningLeft.setPlayMode(Animation.PlayMode.LOOP);
+        playerMiningRight.setPlayMode(Animation.PlayMode.LOOP);
 
     }
 }

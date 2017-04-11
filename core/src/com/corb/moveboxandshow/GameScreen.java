@@ -10,11 +10,14 @@ import com.corb.moveboxandshow.systems.CollisionSystem;
 import com.corb.moveboxandshow.systems.InputSystem;
 import com.corb.moveboxandshow.systems.MovementSystem;
 import com.corb.moveboxandshow.systems.PlayerSystem;
+import com.corb.moveboxandshow.systems.RemovableSystem;
 import com.corb.moveboxandshow.systems.StateSystem;
 import com.corb.moveboxandshow.systems.AnimationSystem;
 import com.corb.moveboxandshow.systems.CameraSystem;
 import com.corb.moveboxandshow.systems.RenderingSystem;
 import com.corb.moveboxandshow.systems.BlockSystem;
+import com.corb.moveboxandshow.systems.TilePositionSystem;
+import com.corb.moveboxandshow.world.World;
 
 
 public class GameScreen extends ScreenAdapter {
@@ -49,17 +52,20 @@ public class GameScreen extends ScreenAdapter {
 
         //Add Systems:
 
-        engine.addSystem(new PlayerSystem());
+        engine.addSystem(new PlayerSystem(world));
         engine.addSystem(new BlockSystem());
         engine.addSystem(new MovementSystem());
+        engine.addSystem(new TilePositionSystem());
         engine.addSystem(new CollisionSystem(world));
 
-        engine.addSystem(new InputSystem(controller));
 
+        engine.addSystem(new InputSystem(controller));
         engine.addSystem(new StateSystem());
         engine.addSystem(new AnimationSystem());
         engine.addSystem(new CameraSystem());
         engine.addSystem(new RenderingSystem(game.batch));
+
+        engine.addSystem(new RemovableSystem(this.engine));//Very important that this is the last System. You don't want to remove an Entity then reference it!
 
         world.create();
 
@@ -70,7 +76,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         update(delta);
-        myFPS.log();
+//        myFPS.log();
         drawUI();
 
     }
@@ -81,7 +87,7 @@ public class GameScreen extends ScreenAdapter {
         //Handles updating all the Active Systems
         controller.update(deltaTime);
         engine.update(deltaTime);
-
+        world.update();
         //A Switch state is used to adjust which Systems are active based on the Game State
         //Eg a pause would set all Player movement systems to false... ect
         switch (state) {

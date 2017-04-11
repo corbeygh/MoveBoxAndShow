@@ -51,6 +51,7 @@ public class RenderingSystem extends IteratingSystem {
 
         cam = new OrthographicCamera(RENDERING_DISTANCE_WIDTH, RENDERING_DISTANCE_HEIGHT);
         cam.position.set(RENDERING_DISTANCE_WIDTH / 2, RENDERING_DISTANCE_HEIGHT / 2, 0);
+        cam.zoom = 2f;
     }
 
     @Override

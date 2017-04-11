@@ -7,7 +7,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Rectangle;
-import com.corb.moveboxandshow.World;
+import com.corb.moveboxandshow.world.World;
 import com.corb.moveboxandshow.components.BlockComponent;
 import com.corb.moveboxandshow.components.PlayerComponent;
 import com.corb.moveboxandshow.components.UserInputComponent;
@@ -15,11 +15,6 @@ import com.corb.moveboxandshow.components.MovementComponent;
 import com.corb.moveboxandshow.components.StateComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
 import com.corb.moveboxandshow.components.BoundsComponent;
-
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.geometry.Rectangle2D;
 
 /**
  * Created by Calvin on 23/03/2017.
@@ -95,21 +90,26 @@ public class CollisionSystem extends EntitySystem {
                 //test for collision
                 //Rectangle: Player and Block = their Bounds + Position.
                 Rectangle playerRect = new Rectangle(
-                        playerBounds.bounds.getX() + playerPos.position.x,
-                        playerBounds.bounds.getY() + playerPos.position.y,
+                        playerPos.position.x  ,
+                        playerPos.position.y ,
                         playerBounds.bounds.getWidth(),
                         playerBounds.bounds.getHeight());
 
+
+
                 Rectangle blockRect = new Rectangle(
-                        blockBounds.bounds.getX() + blockPos.position.x,
-                        blockBounds.bounds.getY() + blockPos.position.y,
-                        blockBounds.bounds.getWidth(),
+                        blockPos.position.x  , //- blockBounds.bounds.getWidth()
+                        blockPos.position.y  ,
+                        blockBounds.bounds.getWidth() -  playerBounds.bounds.getWidth()/4,
                         blockBounds.bounds.getHeight());
 
-                if (playerRect.overlaps(blockRect)) {
+                //Rectangle: Player and Block = their Bounds + Position.
+
+
+                if (playerRect.overlaps(blockRect)  ) {
                     //TODO TEST and set velocity to zero for player
                     //Moves Player back to last position (before the collision)
-                    playerPos.position.set(playerPos.lastPosition);
+//                    playerPos.position.set(playerPos.lastPosition); //TODO Uncomment to enable collision between blocks
 
                 }
             }

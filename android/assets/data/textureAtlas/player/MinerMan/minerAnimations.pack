@@ -3,191 +3,247 @@ minerAnimations.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+Miner_Mining_Left0
+  rotate: false
+  xy: 1, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Left1
+  rotate: false
+  xy: 35, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Left3
+  rotate: false
+  xy: 35, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Left2
+  rotate: false
+  xy: 69, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Right0
+  rotate: false
+  xy: 103, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Right1
+  rotate: false
+  xy: 137, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Right3
+  rotate: false
+  xy: 137, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Miner_Mining_Right2
+  rotate: false
+  xy: 171, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 Miner_Stationary
   rotate: false
-  xy: 1, 205
+  xy: 205, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Stationary_Left
   rotate: false
-  xy: 1, 171
+  xy: 239, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left00
+Miner_Walking_Left00
   rotate: false
-  xy: 1, 171
+  xy: 239, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left06
+Miner_Walking_Left06
   rotate: false
-  xy: 1, 171
+  xy: 239, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Stationary_Right
   rotate: false
-  xy: 35, 205
+  xy: 273, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right00
   rotate: false
-  xy: 35, 205
+  xy: 273, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right06
   rotate: false
-  xy: 35, 205
+  xy: 273, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left01
+Miner_Walking_Left01
   rotate: false
-  xy: 1, 137
+  xy: 307, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left05
+Miner_Walking_Left05
   rotate: false
-  xy: 1, 137
+  xy: 307, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left02
+Miner_Walking_Left02
   rotate: false
-  xy: 35, 171
+  xy: 341, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left03
+Miner_Walking_Left03
   rotate: false
-  xy: 69, 205
+  xy: 375, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left04
+Miner_Walking_Left04
   rotate: false
-  xy: 1, 103
+  xy: 409, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left07
+Miner_Walking_Left07
   rotate: false
-  xy: 35, 137
+  xy: 443, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left11
+Miner_Walking_Left11
   rotate: false
-  xy: 35, 137
+  xy: 443, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left08
+Miner_Walking_Left08
   rotate: false
-  xy: 69, 171
+  xy: 477, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left09
+Miner_Walking_Left09
   rotate: false
-  xy: 1, 69
+  xy: 511, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Miner_Walking_left10
+Miner_Walking_Left10
   rotate: false
-  xy: 35, 103
+  xy: 545, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right01
   rotate: false
-  xy: 69, 137
+  xy: 579, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right05
   rotate: false
-  xy: 69, 137
+  xy: 579, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right02
   rotate: false
-  xy: 1, 35
+  xy: 613, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right03
   rotate: false
-  xy: 35, 69
+  xy: 647, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right04
   rotate: false
-  xy: 69, 103
+  xy: 681, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right07
   rotate: false
-  xy: 1, 1
+  xy: 715, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right11
   rotate: false
-  xy: 1, 1
+  xy: 715, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right08
   rotate: false
-  xy: 35, 35
+  xy: 749, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right09
   rotate: false
-  xy: 69, 69
+  xy: 783, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 Miner_Walking_Right10
   rotate: false
-  xy: 35, 1
+  xy: 817, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
