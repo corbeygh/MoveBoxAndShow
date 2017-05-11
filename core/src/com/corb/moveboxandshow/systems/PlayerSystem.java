@@ -10,7 +10,7 @@ import com.corb.moveboxandshow.components.UserInputComponent;
 import com.corb.moveboxandshow.components.MovementComponent;
 import com.corb.moveboxandshow.components.StateComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
-import com.corb.moveboxandshow.world.World;
+import com.corb.moveboxandshow.world.GameWorld;
 
 /**
  * Created by Calvin on 22/03/2017.
@@ -32,9 +32,9 @@ public class PlayerSystem extends IteratingSystem {
     private ComponentMapper<MovementComponent> mm;
     private ComponentMapper<TilePositionComponent> tpm;
 
-    private World world;
+    private GameWorld world;
 
-    public PlayerSystem(World world) {
+    public PlayerSystem(GameWorld world) {
         super(family);
         this.world = world;
         pm = ComponentMapper.getFor(PlayerComponent.class);
@@ -56,10 +56,9 @@ public class PlayerSystem extends IteratingSystem {
         PlayerComponent player = pm.get(entity);
         UserInputComponent userInput = ui.get(entity);
         StateComponent state = sm.get(entity);
-        TransformComponent pos = trm.get(entity);
         MovementComponent mov = mm.get(entity);
         TilePositionComponent tilePos = tpm.get(entity);
-//        System.out.println("x "+pos.position.x+ " y "+pos.position.y);
+//        System.out.println("x "+pos.pos.x+ " y "+pos.pos.y);
 
         //Based on what state the player is in process their input:
         if (userInput.moveLeft) {
@@ -82,45 +81,4 @@ public class PlayerSystem extends IteratingSystem {
     }
 
 
-//    private void updateIndex(PlayerComponent player) {
-//        int playerX = (int) player.getTilePos().x;
-//        int playerY = (int) player.getTilePos().y;
-//
-//        int indexX = world.getIndexCol();
-//        int indexY = world.getIndexRow();
-//        MapChunk mapChunk = world.getMapChunk();
-//
-//        if (playerX < mapChunk.getTileStartX()) {
-//            if (indexX != 0) {
-//                System.out.println("1");
-//                world.setOldIndexCol(world.getIndexCol());
-//                world.setIndexCol(world.getIndexCol() - 1);
-//                world.setIndexChanged(true);
-//            }
-//
-//        } else if (playerX > mapChunk.getTileEndX()) {
-//            if (indexX != World.getNumberOfChunks() - 1) {
-//                System.out.println("2");
-//                world.setOldIndexCol(world.getIndexCol());
-//                world.setIndexCol(world.getIndexCol() + 1);
-//                world.setIndexChanged(true);
-//            }
-//
-//        } else if (playerY < mapChunk.getTileStartY()) {
-//            if (indexY != 0) {
-//                System.out.println("3");
-//                world.setOldIndexRow(world.getIndexRow());
-//                world.setIndexRow(world.getIndexRow() - 1);
-//                world.setIndexChanged(true);
-//            }
-//
-//        } else if (playerY > mapChunk.getTileEndY()) {
-//            if (indexY != World.getNumberOfChunks() - 1) {
-//                System.out.println("4");
-//                world.setOldIndexRow(world.getIndexRow());
-//                world.setIndexRow(world.getIndexRow() + 1);
-//                world.setIndexChanged(true);
-//            }
-//        }
-//    }
 }

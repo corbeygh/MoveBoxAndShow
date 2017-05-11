@@ -6,12 +6,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.corb.moveboxandshow.components.MovementComponent;
-import com.corb.moveboxandshow.components.PlayerComponent;
-import com.corb.moveboxandshow.components.StateComponent;
 import com.corb.moveboxandshow.components.TilePositionComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
-import com.corb.moveboxandshow.components.UserInputComponent;
 
 /**
  * Created by Calvin on 25/03/2017.
@@ -35,7 +31,7 @@ public class TilePositionSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         Vector2 tilePos = tpm.get(entity).getTilePos();
 
-        Vector3 pos = tm.get(entity).position;
+        Vector3 pos = tm.get(entity).pos;
 
         int tileSize = tpm.get(entity).getTILE_SIZE();
 

@@ -5,14 +5,18 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.corb.moveboxandshow.components.PlayerComponent;
 import com.corb.moveboxandshow.components.RemovableComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -21,14 +25,14 @@ import java.util.Stack;
  * Ground level could be 12?
  */
 
-public class WorldManager extends IteratingSystem {
+public class GameWorldManager extends IteratingSystem {
 
     private Stack<Entity> removable;//entitiesScheduledForRemovable
     private Tile[][] allTiles;
 
     private LinkedList<LinkedList<Tile>> visibleTiles;
-    private int drawDistanceRow = 8;
-    private int drawDistanceCol = 8;
+    private int drawDistanceRow = 16;
+    private int drawDistanceCol = 16;
 
     private Entity player;
     private ComponentMapper<PlayerComponent> pm;
@@ -36,7 +40,7 @@ public class WorldManager extends IteratingSystem {
     private ComponentMapper<RemovableComponent> rm;
     private PooledEngine engine;
 
-    public WorldManager(Entity player, PooledEngine engine) {
+    public GameWorldManager(Entity player, PooledEngine engine) {
         super(Family.all(
                 PlayerComponent.class,
                 TransformComponent.class).get());
@@ -45,28 +49,76 @@ public class WorldManager extends IteratingSystem {
         this.player = player;
         this.engine = engine;
         removable = new Stack<Entity>();
-        allTiles = new Tile[World.WORLD_HEIGHT][World.WORLD_WIDTH];
+        allTiles = new Tile[GameWorld.WORLD_HEIGHT][GameWorld.WORLD_WIDTH];
         initTileIDS();//ATM just test code :
 
         initVisibleTiles();        //Step 1 construct the linked list based on the players location ---DONE
 
     }
 
+    /**
+     * Loads Block ID values from a csv file. The csv was exported from Tiled.exe (A Visual Map editor)
+     */
     private void initTileIDS() {
         //TODO Load from csv file, Each tile has a different id.
         //This way I can build maps using tiled. then export them to .csv files.
+        int[] groundLayer = new int[GameWorld.WORLD_WIDTH * GameWorld.WORLD_GROUND_LEVEL];
+        try {
 
-        //ATM just test code :
-        for (int i = 0; i < allTiles.length; i++) {
-            for (int j = 0; j < allTiles[i].length; j++) {
-                float x = World.EDGE_WEST + j;
-                float y = World.EDGE_NORTH - i;
+            ArrayList<String[]> words = new ArrayList<String[]>();
+            File file = new File(Gdx.files.internal("data/map/GroundLevel.csv").path());
 
-                int tileID = (j % 2 == 0) ? 1 : 0;
+            //TODO Replace current reading with:
+//            https://github.com/libgdx/libgdx/wiki/File-handling#reading-from-a-file
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNext()) {
 
-                allTiles[i][j] = new Tile(tileID, x, y, i, j);
+                String line = scanner.next();
+                String[] numbers = line.split(",");
+                words.add(numbers);
+            }
+
+            for(int i = 0; i< words.size(); i++){
+                for(int j = 0; j<words.get(0).length; j++){
+                    groundLayer[(i*words.get(0).length)+j] = Integer.valueOf(words.get(i)[j]);
+                }
+            }
+
+            scanner.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+
+            for (int i = 0; i < allTiles.length; i++) {
+                for (int j = 0; j < allTiles[i].length; j++) {
+                    float x = GameWorld.EDGE_WEST + j;
+                    float y = GameWorld.EDGE_NORTH - i;
+                    int tileID;
+
+                    if(j==0 || j == allTiles[0].length-1 || i== allTiles.length-1) {
+                        //All Sides and bottoms are walls.
+                        tileID = Tile.STONE_BLOCK;
+
+                    }else if( (j == 10 || j==11 || j == 13 || ( i == allTiles.length-2 && (j > 9 && j < 14))) && i > GameWorld.WORLD_GROUND_LEVEL-2 ){//TODO Remove ONLY FOR TESTING
+                            tileID = Tile.MINED_BLOCK;
+
+                    } else if ((i * allTiles[i].length) + j < groundLayer.length) {
+
+                        tileID = groundLayer[(i * allTiles[i].length) + j];
+                    } else {
+
+                        //TODO getRandomTile Block Based on height from surface level
+                        //The deeper you are the more chance there is of you getting better resources.
+                        tileID = Tile.DIRT_BLOCK;
+                    }
+                    System.out.printf(tileID+" ");
+                    if(j == allTiles.length-1 )System.out.println("");
+
+                    allTiles[i][j] = new Tile(tileID, x, y, i, j);
+                }
             }
         }
+
     }
 
     /**
@@ -77,15 +129,14 @@ public class WorldManager extends IteratingSystem {
      */
 
     private void initVisibleTiles() {
-        Vector3 player_Pos = tm.get(player).position;
+        Vector3 player_Pos = tm.get(player).pos;
         Vector2 drawDistanceStart = getTileIndexBasedOnPosition(player_Pos.x, player_Pos.y);
-        System.out.println("Player pos: " + drawDistanceStart.x + " " + drawDistanceStart.y);
 
         //Center the player so he renders in the middle
-        drawDistanceStart.x = (drawDistanceStart.x - drawDistanceCol/2)+2;
-        drawDistanceStart.y = (drawDistanceStart.y - drawDistanceRow/2)+2;
+        drawDistanceStart.x = (drawDistanceStart.x - drawDistanceCol / 2) + 2;
+        drawDistanceStart.y = (drawDistanceStart.y - drawDistanceRow / 2) + 2;
 
-        //Evaluate if starting tile position is valid:
+        //Evaluate if starting tile pos is valid:
         if (drawDistanceStart.x < 0) {
             drawDistanceStart.x = 0;
         } else if (drawDistanceStart.x + drawDistanceCol >= allTiles[0].length - 1) {
@@ -97,7 +148,6 @@ public class WorldManager extends IteratingSystem {
         } else if (drawDistanceStart.y + drawDistanceRow >= allTiles.length - 1) {
             drawDistanceStart.y = (allTiles.length - 1) - drawDistanceRow;
         }
-        System.out.println("drawDistanceStart.x = " + drawDistanceStart.x + " " + "drawDistanceStart.y = " + drawDistanceStart.y);
 
 
         visibleTiles = new LinkedList<LinkedList<Tile>>();
@@ -116,8 +166,8 @@ public class WorldManager extends IteratingSystem {
     }
 
     private Vector2 getTileIndexBasedOnPosition(float posX, float posY) {
-        int row = ((int) (posY - World.EDGE_NORTH) * -1);
-        int col = ((int) (posX - World.EDGE_WEST));
+        int row = ((int) (posY - GameWorld.EDGE_NORTH) * -1);
+        int col = ((int) (posX - GameWorld.EDGE_WEST));
 
         return new Vector2(col, row);
     }
@@ -125,18 +175,16 @@ public class WorldManager extends IteratingSystem {
     public void update() {
         Vector2 playerTilePosition = pm.get(player).getTilePos();
         PlayerComponent playerComponent = pm.get(player);
-        Vector3 player_Pos = tm.get(player).position;
+        Vector3 player_Pos = tm.get(player).pos;
         Vector2 player_Tile_Pos = getTileIndexBasedOnPosition(player_Pos.x, player_Pos.y);
 
         if (hasPlayerMoved(player_Tile_Pos)) {
-            System.out.println("Method");
             int direction = getDeltaDirection(player_Tile_Pos);
-            System.out.println(direction);
 
             adjustVisibleTiles(direction, player_Tile_Pos);
         }
 
-        oldPlayerTilePos.set(getTileIndexBasedOnPosition(player_Pos.x, player_Pos.y));//update player tile position for next tick
+        oldPlayerTilePos.set(getTileIndexBasedOnPosition(player_Pos.x, player_Pos.y));//update player tile pos for next tick
 
         removeEntitysInQueue();
     }
@@ -146,7 +194,7 @@ public class WorldManager extends IteratingSystem {
      * This means the player is everything off the players screen is been destroyed in order to increase performance
      */
 
-    private Vector2 oldPlayerTilePos = new Vector2(World.PLAYER_START_X, World.PLAYER_START_Y);
+    private Vector2 oldPlayerTilePos = new Vector2(GameWorld.PLAYER_START_X, GameWorld.PLAYER_START_Y);
 
     private boolean hasPlayerMoved(Vector2 currentTilePos) {
         //compares current pos to old oldPlayerTilePos
@@ -196,7 +244,7 @@ public class WorldManager extends IteratingSystem {
         //TODO Validation to stop program from crashing
         switch (direction) {
             case DIRECTION_NORTH:
-                if(visibleTiles.getFirst().getFirst().getAllTilesIndexRow()!=0 && (player_Tile_Pos.y+(drawDistanceRow/2) < (allTiles.length-1) )) {
+                if (visibleTiles.getFirst().getFirst().getAllTilesIndexRow() != 0 && (player_Tile_Pos.y + (drawDistanceRow / 2) < (allTiles.length - 1))) {
                     removeSouthernVisibleTiles();
                     addNorthernVisibleTiles();
                 }
@@ -204,68 +252,66 @@ public class WorldManager extends IteratingSystem {
 
             case DIRECTION_SOUTH:
 
-                if(visibleTiles.getLast().getFirst().getAllTilesIndexRow()!= allTiles.length-1 && (player_Tile_Pos.y-(drawDistanceRow/2)+1 > 0) ) {
+                if (visibleTiles.getLast().getFirst().getAllTilesIndexRow() != allTiles.length - 1 && (player_Tile_Pos.y - (drawDistanceRow / 2) + 1 > 0)) {
                     removeNorthernVisibleTiles();
                     addSouthernVisibleTiles();
                 }
                 break;
 
             case DIRECTION_EAST:
-                System.out.println("1: "+ (player_Tile_Pos.y));
-                System.out.println("1: "+ visibleTiles.getFirst().getLast().getAllTilesIndexCol());
 
-                if(visibleTiles.getFirst().getLast().getAllTilesIndexCol()!= allTiles[0].length-1 && player_Tile_Pos.x -(drawDistanceCol/2)+1 > 0) {
+                if (visibleTiles.getFirst().getLast().getAllTilesIndexCol() != allTiles[0].length - 1 && player_Tile_Pos.x - (drawDistanceCol / 2) + 1 > 0) {
                     removeWesternVisibleTiles();
                     addEasternVisibleTiles();
                 }
                 break;
 
             case DIRECTION_WEST:
-                if(visibleTiles.getFirst().getFirst().getAllTilesIndexCol()!= 0 && player_Tile_Pos.x + (drawDistanceCol/2) < (allTiles[0].length-1) ) { //&&
+                if (visibleTiles.getFirst().getFirst().getAllTilesIndexCol() != 0 && player_Tile_Pos.x + (drawDistanceCol / 2) < (allTiles[0].length - 1)) { //&&
                     removeEasternVisibleTiles();
                     addWesternVisibleTiles();
                 }
                 break;
 
             case DIRECTION_NORTH_EAST:
-                if(visibleTiles.getFirst().getFirst().getAllTilesIndexRow()!=0 && (player_Tile_Pos.y+(drawDistanceRow/2) < (allTiles.length-1) )) {
+                if (visibleTiles.getFirst().getFirst().getAllTilesIndexRow() != 0 && (player_Tile_Pos.y + (drawDistanceRow / 2) < (allTiles.length - 1))) {
                     removeSouthernVisibleTiles();
                     addNorthernVisibleTiles();
                 }
-                if(visibleTiles.getFirst().getLast().getAllTilesIndexCol()!= allTiles[0].length-1 && player_Tile_Pos.x -(drawDistanceCol/2)+1 > 0) {
+                if (visibleTiles.getFirst().getLast().getAllTilesIndexCol() != allTiles[0].length - 1 && player_Tile_Pos.x - (drawDistanceCol / 2) + 1 > 0) {
                     removeWesternVisibleTiles();
                     addEasternVisibleTiles();
                 }
                 break;
 
             case DIRECTION_NORTH_WEST:
-                if(visibleTiles.getFirst().getFirst().getAllTilesIndexRow()!=0 && (player_Tile_Pos.y+(drawDistanceRow/2) < (allTiles.length-1) )) {
+                if (visibleTiles.getFirst().getFirst().getAllTilesIndexRow() != 0 && (player_Tile_Pos.y + (drawDistanceRow / 2) < (allTiles.length - 1))) {
                     removeSouthernVisibleTiles();
                     addNorthernVisibleTiles();
                 }
-                if(visibleTiles.getFirst().getFirst().getAllTilesIndexCol()!= 0 && player_Tile_Pos.x + (drawDistanceCol/2) < (allTiles[0].length-1) ) { //&&
+                if (visibleTiles.getFirst().getFirst().getAllTilesIndexCol() != 0 && player_Tile_Pos.x + (drawDistanceCol / 2) < (allTiles[0].length - 1)) { //&&
                     removeEasternVisibleTiles();
                     addWesternVisibleTiles();
                 }
                 break;
 
             case DIRECTION_SOUTH_EAST:
-                if(visibleTiles.getLast().getFirst().getAllTilesIndexRow()!= allTiles.length-1 && (player_Tile_Pos.y-(drawDistanceRow/2)+1 > 0) ) {
+                if (visibleTiles.getLast().getFirst().getAllTilesIndexRow() != allTiles.length - 1 && (player_Tile_Pos.y - (drawDistanceRow / 2) + 1 > 0)) {
                     removeNorthernVisibleTiles();
                     addSouthernVisibleTiles();
                 }
-                if(visibleTiles.getFirst().getLast().getAllTilesIndexCol()!= allTiles[0].length-1 && player_Tile_Pos.x -(drawDistanceCol/2)+1 > 0) {
+                if (visibleTiles.getFirst().getLast().getAllTilesIndexCol() != allTiles[0].length - 1 && player_Tile_Pos.x - (drawDistanceCol / 2) + 1 > 0) {
                     removeWesternVisibleTiles();
                     addEasternVisibleTiles();
                 }
                 break;
 
             case DIRECTION_SOUTH_WEST:
-                if(visibleTiles.getLast().getFirst().getAllTilesIndexRow()!= allTiles.length-1 && (player_Tile_Pos.y-(drawDistanceRow/2)+1 > 0) ) {
+                if (visibleTiles.getLast().getFirst().getAllTilesIndexRow() != allTiles.length - 1 && (player_Tile_Pos.y - (drawDistanceRow / 2) + 1 > 0)) {
                     removeNorthernVisibleTiles();
                     addSouthernVisibleTiles();
                 }
-                if(visibleTiles.getFirst().getFirst().getAllTilesIndexCol()!= 0 && player_Tile_Pos.x + (drawDistanceCol/2) < (allTiles[0].length-1) ) { //&&
+                if (visibleTiles.getFirst().getFirst().getAllTilesIndexCol() != 0 && player_Tile_Pos.x + (drawDistanceCol / 2) < (allTiles[0].length - 1)) { //&&
                     removeEasternVisibleTiles();
                     addWesternVisibleTiles();
                 }

@@ -11,13 +11,14 @@ import com.corb.moveboxandshow.systems.InputSystem;
 import com.corb.moveboxandshow.systems.MovementSystem;
 import com.corb.moveboxandshow.systems.PlayerSystem;
 import com.corb.moveboxandshow.systems.RemovableSystem;
+import com.corb.moveboxandshow.systems.ShopSystem;
 import com.corb.moveboxandshow.systems.StateSystem;
 import com.corb.moveboxandshow.systems.AnimationSystem;
 import com.corb.moveboxandshow.systems.CameraSystem;
 import com.corb.moveboxandshow.systems.RenderingSystem;
 import com.corb.moveboxandshow.systems.BlockSystem;
 import com.corb.moveboxandshow.systems.TilePositionSystem;
-import com.corb.moveboxandshow.world.World;
+import com.corb.moveboxandshow.world.GameWorld;
 
 
 public class GameScreen extends ScreenAdapter {
@@ -33,7 +34,7 @@ public class GameScreen extends ScreenAdapter {
 
     private final Main game;
 
-    private World world;
+    private GameWorld gameWorld;
     private OrthographicCamera guiCamera;
     //Input
     private Controller controller;
@@ -48,16 +49,17 @@ public class GameScreen extends ScreenAdapter {
         guiCamera.position.set(Assets.W_WIDTH / 2, Assets.W_HEIGHT / 2, 0);
 
         engine = new PooledEngine();
-        world = new World(engine);
+        gameWorld = new GameWorld(engine);
 
         //Add Systems:
 
-        engine.addSystem(new PlayerSystem(world));
+        engine.addSystem(new PlayerSystem(gameWorld));
         engine.addSystem(new BlockSystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new TilePositionSystem());
-        engine.addSystem(new CollisionSystem(world));
+        engine.addSystem(new CollisionSystem(gameWorld));
 
+        engine.addSystem(new ShopSystem(gameWorld,game));
 
         engine.addSystem(new InputSystem(controller));
         engine.addSystem(new StateSystem());
@@ -67,7 +69,7 @@ public class GameScreen extends ScreenAdapter {
 
         engine.addSystem(new RemovableSystem(this.engine));//Very important that this is the last System. You don't want to remove an Entity then reference it!
 
-        world.create();
+        gameWorld.create();
 
         state = GAME_READY;
         pauseSystems();
@@ -76,7 +78,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         update(delta);
-//        myFPS.log();
+        myFPS.log();
         drawUI();
 
     }
@@ -87,7 +89,7 @@ public class GameScreen extends ScreenAdapter {
         //Handles updating all the Active Systems
         controller.update(deltaTime);
         engine.update(deltaTime);
-        world.update();
+        gameWorld.update();
         //A Switch state is used to adjust which Systems are active based on the Game State
         //Eg a pause would set all Player movement systems to false... ect
         switch (state) {

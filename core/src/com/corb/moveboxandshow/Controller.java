@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,8 +35,48 @@ public class Controller {
         camera = new OrthographicCamera();
         viewPort = new FitViewport(Assets.W_WIDTH, Assets.W_HEIGHT, camera);
         stage = new Stage(viewPort, game.batch);
-
+        Gdx.input.setInputProcessor(stage);
         stage.addListener(new InputListener() {
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                if (x < (Assets.W_WIDTH/8) *3){
+                    rightPressed = false;
+                    leftPressed = true;
+
+                } else if( x > (Assets.W_WIDTH/8) *5){
+                    rightPressed = true;
+                    leftPressed = false;
+
+                }
+
+                if( y < (Assets.W_HEIGHT/8) *2){
+                    upPressed = false;
+                    downPressed = true;
+
+                } else if( y > (Assets.W_HEIGHT/8) *6){
+                    upPressed = true;
+                    downPressed = false;
+                }
+
+                return true;
+            }
+
+
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("Up");
+
+                rightPressed = false;
+                leftPressed = false;
+                upPressed = false;
+                downPressed = false;
+            }
+
+
 
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -106,89 +147,31 @@ public class Controller {
             }
         });
 
-        Gdx.input.setInputProcessor(stage);
 
-        Table table = new Table();
-        table.left().bottom();
 
-        Image upImg = new Image(new Texture(Gdx.files.internal("data/controllerSkins/shadedDark/shadedDark26.png")));
-        upImg.setSize(25, 25);
-        upImg.addListener(new InputListener() {
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                upPressed = true;
-                return true;
-            }
 
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                upPressed = false;
-            }
-        });
 
-        Image downImg = new Image(new Texture(Gdx.files.internal("data/controllerSkins/shadedDark/shadedDark27.png")));
-        downImg.setSize(25, 25);
-        downImg.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                downPressed = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                downPressed = false;
-            }
-        });
-
-        Image rightImg = new Image(new Texture(Gdx.files.internal("data/controllerSkins/shadedDark/shadedDark25.png")));
-        rightImg.setSize(25, 25);
-        rightImg.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                rightPressed = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                rightPressed = false;
-            }
-        });
-        Image leftImg = new Image(new Texture(Gdx.files.internal("data/controllerSkins/shadedDark/shadedDark24.png")));
-        leftImg.setSize(25, 25);
-        leftImg.addListener(new InputListener() {
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                leftPressed = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                leftPressed = false;
-            }
-        });
-
-        //Putting images into table.
-        table.add();
-        table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
-        table.row();
-        table.add();
-        table.row().pad(5, 5, 5, 5);
-        table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
-        table.add();
-        table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
-        table.row().padBottom(5);
-        table.add();
-        table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
-        table.add();
-
-        stage.addActor(table);
+////        Table table = new Table();
+////        table.left().bottom();
+////
+////
+////        table.add();
+////        table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
+////        table.row();
+////        table.add();
+////        table.row().pad(5, 5, 5, 5);
+////        table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
+////        table.add();
+////        table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
+////        table.row().padBottom(5);
+////        table.add();
+////        table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
+////        table.add();
+//
+//        stage.addActor(table);
+        Actor actor = new Actor();
+        stage.addActor(actor);
     }
 
     public void update(float delta) {

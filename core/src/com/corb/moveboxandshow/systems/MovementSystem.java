@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.corb.moveboxandshow.components.MovementComponent;
-import com.corb.moveboxandshow.components.PlayerComponent;
 import com.corb.moveboxandshow.components.StateComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
 
@@ -46,12 +45,12 @@ public class MovementSystem extends IteratingSystem {
         //update current velocity variable
         mov.velocity.add(vector);
 
-        //calculate change in position using velocity
+        //calculate change in pos using velocity
         vector.set(mov.velocity).scl(deltaTime);
 
-        //update current position variable
-        position.lastPosition.set(position.position);
-        position.position.add(vector.x, vector.y, 0.0f);
+        //update current pos variable
+        position.lastPosition.set(position.pos);
+        position.pos.add(vector.x, vector.y, 0.0f);
 
         setAnimationState(mov.velocity.x, mov.velocity.y, state); //set Animation state based on the direction of travel
     }

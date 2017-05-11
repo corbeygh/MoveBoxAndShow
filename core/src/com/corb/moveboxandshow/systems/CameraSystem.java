@@ -38,8 +38,8 @@ public class CameraSystem extends IteratingSystem {
         }
 
         //Follows Player
-        cam.camera.position.y = target.position.y;
-        cam.camera.position.x = target.position.x;
+        cam.camera.position.y = target.pos.y;
+        cam.camera.position.x = target.pos.x;
 
     }
 }

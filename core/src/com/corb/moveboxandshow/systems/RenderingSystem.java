@@ -42,8 +42,8 @@ public class RenderingSystem extends IteratingSystem {
         comparator = new Comparator<Entity>() {
             @Override
             public int compare(Entity entityA, Entity entityB) {
-                return (int)Math.signum(transformM.get(entityB).position.z -
-                        transformM.get(entityA).position.z);
+                return (int)Math.signum(transformM.get(entityB).pos.z -
+                        transformM.get(entityA).pos.z);
             }
         };
 
@@ -79,7 +79,7 @@ public class RenderingSystem extends IteratingSystem {
             float originY = height * 0.5f;
 
             batch.draw(tex.region,
-                    t.position.x - originX, t.position.y - originY,
+                    t.pos.x - originX, t.pos.y - originY,
                     originX, originY,
                     width, height,
                     t.scale.x / PPM, t.scale.y / PPM,
