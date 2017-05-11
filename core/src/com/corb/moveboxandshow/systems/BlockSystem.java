@@ -29,8 +29,6 @@ public class BlockSystem extends IteratingSystem {
         rm = ComponentMapper.getFor(RemovableComponent.class);
     }
 
-
-
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         if(bm.get(entity).isRemove()){
