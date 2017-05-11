@@ -26,7 +26,7 @@ public class BlockSystem extends IteratingSystem {
     public BlockSystem() {
         super(family);
         bm = ComponentMapper.getFor(BlockComponent.class);
-        rm = ComponentMapper.getFor(RemovableComponent.class);
+        rm = ComponentMapper.getFor(RemovableComponent.class);//kk
     }
 
     @Override
