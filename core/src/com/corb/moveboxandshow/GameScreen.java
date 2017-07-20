@@ -6,6 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.corb.moveboxandshow.systems.CollisionSystem;
 import com.corb.moveboxandshow.systems.InputSystem;
 import com.corb.moveboxandshow.systems.MovementSystem;
@@ -41,15 +44,23 @@ public class GameScreen extends ScreenAdapter {
     //Game Engine
     private PooledEngine engine;
 
-    public GameScreen (Main game) {
+    //Box2D
+    private World box2DWorld;
+    private Box2DDebugRenderer b2dr;
+
+    public GameScreen(Main game) {
         this.game = game;
         controller = new Controller(game);
         myFPS = new FPSLogger();
+
         guiCamera = new OrthographicCamera(Assets.W_WIDTH, Assets.W_HEIGHT);
         guiCamera.position.set(Assets.W_WIDTH / 2, Assets.W_HEIGHT / 2, 0);
 
         engine = new PooledEngine();
-        gameWorld = new GameWorld(engine);
+
+        b2dr = new Box2DDebugRenderer();
+        box2DWorld = new World(new Vector2(0, -9.8f), true);
+        gameWorld = new GameWorld(engine, box2DWorld);
 
         //Add Systems:
 
@@ -59,7 +70,7 @@ public class GameScreen extends ScreenAdapter {
         engine.addSystem(new TilePositionSystem());
         engine.addSystem(new CollisionSystem(gameWorld));
 
-        engine.addSystem(new ShopSystem(gameWorld,game));
+        engine.addSystem(new ShopSystem(gameWorld, game));
 
         engine.addSystem(new InputSystem(controller));
         engine.addSystem(new StateSystem());
@@ -83,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
-    private void update(float deltaTime){
+    private void update(float deltaTime) {
         if (deltaTime > 0.1f) deltaTime = 0.1f;
 
         //Handles updating all the Active Systems
@@ -102,21 +113,31 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void updateReady () {
+    private void updateReady() {
         if (Gdx.input.justTouched()) {
             state = GAME_RUNNING;
             resumeSystems();
         }
     }
 
-    private void updateRunning(float deltaTime){
+    private void updateRunning(float deltaTime) {
         //if user clicks pause button, pause systems.
     }
 
-    private void drawUI () {
+    private void drawUI() {
         //Dependent on the device Render:
-        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
             controller.draw();
+        } else {
+            if (box2DWorld == null) {
+                System.out.println("null world");
+
+            } else {
+                b2dr.render(box2DWorld, guiCamera.combined);//render our Box2DDebugLines - THIS IS VERY EXPENSIVE on an Android device however on the PC its fine.
+
+            }
+
+
         }
         guiCamera.update();
     }

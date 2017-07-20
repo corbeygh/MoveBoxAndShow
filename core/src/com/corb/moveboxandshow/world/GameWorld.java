@@ -2,6 +2,7 @@ package com.corb.moveboxandshow.world;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -28,12 +29,13 @@ import com.corb.moveboxandshow.systems.RenderingSystem;
 
 public class GameWorld {
 
+    public static final int PPM = 100;
 
     public static final int WORLD_WIDTH = 64;
     public static final int WORLD_HEIGHT = 64;
     public static final int WORLD_GROUND_LEVEL = 16;
-    public static final float PLAYER_START_X = 130f;
-    public static final float PLAYER_START_Y = 130 + 64f;
+    public static final float PLAYER_START_X = 130f - 2f ;
+    public static final float PLAYER_START_Y = 130 + 64f -2f;
 
     public static final float EDGE_NORTH = 128f + WORLD_HEIGHT; //TOP
     public static final float EDGE_SOUTH = 128f; //BOT
@@ -45,14 +47,20 @@ public class GameWorld {
     private Entity player;
     private GameWorldManager worldManager;
 
+    //Box2d variables
+    private World box2DWorld;
+    private Box2DDebugRenderer b2dr;
 
-
-    public GameWorld(PooledEngine engine) {
+    public GameWorld(PooledEngine engine, World box2DWorld) {
         this.engine = engine;
+        this.box2DWorld = box2DWorld;
+
     }
 
     public void create() {
-        this.player = createPlayer();
+        this.player = CreateEntity.createPlayer(engine,box2DWorld,PLAYER_START_X,PLAYER_START_Y);
+
+        box2DWorld.setContactListener(new WorldContactListener(player));
 
         createCamera(this.player);
         worldManager = new GameWorldManager(this.player, this.engine);
@@ -64,51 +72,6 @@ public class GameWorld {
         }
     }
 
-    private Entity createPlayer() {
-        Entity entity = engine.createEntity();
-
-        AnimationComponent animation = engine.createComponent(AnimationComponent.class);
-        PlayerComponent player = engine.createComponent(PlayerComponent.class);
-        BoundsComponent bounds = engine.createComponent(BoundsComponent.class);
-        MovementComponent movement = engine.createComponent(MovementComponent.class);
-        TransformComponent position = engine.createComponent(TransformComponent.class);
-        TextureComponent texture = engine.createComponent(TextureComponent.class);
-        StateComponent state = engine.createComponent(StateComponent.class);
-        UserInputComponent input = engine.createComponent(UserInputComponent.class);
-        TilePositionComponent tilePos = engine.createComponent(TilePositionComponent.class);
-
-        //Animations - Mapping state numbers to Assets
-        animation.animations.put(StateComponent.ANIMATION_STATIONARY, Assets.playerStationary);
-        animation.animations.put(StateComponent.ANIMATION_STATIONARY_WALK_LEFT, Assets.playerStationaryLeft);
-        animation.animations.put(StateComponent.ANIMATION_STATIONARY_WALK_RIGHT, Assets.playerStationaryRight);
-
-        animation.animations.put(StateComponent.ANIMATION_WALK_LEFT, Assets.playerWalkLeft);
-        animation.animations.put(StateComponent.ANIMATION_WALK_RIGHT, Assets.playerWalkRight);
-        animation.animations.put(StateComponent.ANIMATION_JUMP, Assets.playerStationary);
-        animation.animations.put(StateComponent.ANIMATION_FALL, Assets.playerStationary);
-
-        bounds.bounds.width = PlayerComponent.WIDTH;
-        bounds.bounds.height = PlayerComponent.HEIGHT;
-
-        position.pos.set(PLAYER_START_X, PLAYER_START_Y, -1.0f);        //Starting cord
-
-        //default starting animation
-        state.setAnimationState(state.getAnimationState());
-
-        entity.add(animation);
-        entity.add(player);
-        entity.add(bounds);
-        entity.add(input);
-        entity.add(movement);
-        entity.add(position);
-        entity.add(state);
-        entity.add(texture);
-        entity.add(tilePos);
-
-        engine.addEntity(entity);
-
-        return entity;
-    }
 
 
     private void createCamera(Entity target) {
@@ -125,5 +88,9 @@ public class GameWorld {
 
     public Entity getPlayer() {
         return player;
+    }
+
+    public GameWorldManager getWorldManager() {
+        return worldManager;
     }
 }

@@ -24,6 +24,8 @@ class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
+        System.out.println("beginContact");
+
         if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
             Fixture head = fixA.getUserData() == "head" ? fixA : fixB;
             Fixture object = head == fixA ? fixB : fixA;
@@ -62,6 +64,8 @@ class WorldContactListener implements ContactListener {
     public void endContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
+
+        System.out.println("endContact");
 
         if (fixA.getUserData() == "head" || fixB.getUserData() == "head") {
             Fixture head = fixA.getUserData() == "head" ? fixA : fixB;

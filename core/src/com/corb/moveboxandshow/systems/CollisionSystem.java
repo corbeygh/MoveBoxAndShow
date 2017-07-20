@@ -7,6 +7,8 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.corb.moveboxandshow.components.TilePositionComponent;
 import com.corb.moveboxandshow.world.GameWorld;
 import com.corb.moveboxandshow.components.BlockComponent;
 import com.corb.moveboxandshow.components.PlayerComponent;
@@ -15,6 +17,10 @@ import com.corb.moveboxandshow.components.MovementComponent;
 import com.corb.moveboxandshow.components.StateComponent;
 import com.corb.moveboxandshow.components.TransformComponent;
 import com.corb.moveboxandshow.components.BoundsComponent;
+import com.corb.moveboxandshow.world.GameWorldManager;
+import com.corb.moveboxandshow.world.Tile;
+
+import java.util.LinkedList;
 
 /**
  * Created by Calvin on 23/03/2017.
@@ -27,11 +33,11 @@ public class CollisionSystem extends EntitySystem {
     private ComponentMapper<StateComponent> sm;
     private ComponentMapper<TransformComponent> tm;
     private ComponentMapper<BlockComponent> bc;
+    private ComponentMapper<PlayerComponent> pc;
 
     private Engine engine;
     private GameWorld world;
     private ImmutableArray<Entity> players;
-    private ImmutableArray<Entity> blocks;
 
     public CollisionSystem(GameWorld world) {
         this.world = world;
@@ -41,6 +47,7 @@ public class CollisionSystem extends EntitySystem {
         sm = ComponentMapper.getFor(StateComponent.class);
         tm = ComponentMapper.getFor(TransformComponent.class);
         bc = ComponentMapper.getFor(BlockComponent.class);
+        pc = ComponentMapper.getFor(PlayerComponent.class);
     }
 
     @Override
@@ -53,11 +60,7 @@ public class CollisionSystem extends EntitySystem {
                 TransformComponent.class,
                 MovementComponent.class).get());
 
-        blocks = engine.getEntitiesFor(Family.all(BlockComponent.class,
-                UserInputComponent.class,
-                StateComponent.class,
-                TransformComponent.class,
-                MovementComponent.class).get());
+
     }
 
     @Override
@@ -67,8 +70,15 @@ public class CollisionSystem extends EntitySystem {
 
         //Test for collisions between:
         playerAndBlocks();
-
     }
+
+
+    /**
+     * The Variable "Vector2 playerAccuratePos" shows three things.
+     * The axis the player is on x/y
+     * The whole number represents which tile the player is on.
+     * The decimal represents the relative position to center of the tile (0.5 is the center, 0 being Top/Left, .99 being Bot/Right
+     */
 
     private void playerAndBlocks() {
         for (int i = 0; i < players.size(); i++) {
@@ -80,94 +90,198 @@ public class CollisionSystem extends EntitySystem {
             MovementComponent playerMov = mm.get(player);
             BoundsComponent playerBounds = bm.get(player);
             TransformComponent playerPos = tm.get(player);
+            PlayerComponent playerCom = pc.get(player);
 
-            // (This can be optimised so only check for boxes which are active)
-            //loop through all blocks checking for a collision between player and boxes
-            for (int j = 0; j < blocks.size(); j++) {
-                Entity block = blocks.get(j);
+            LinkedList<LinkedList<Tile>> visibleTiles = world.getWorldManager().getVisibleTiles();
 
-                BoundsComponent blockBounds = bm.get(block);
-                TransformComponent blockPos = tm.get(block);
-                BlockComponent blockComponent = bc.get(block);
-
-                //test for collision
-                //Rectangle: Player and Block = their Bounds + Position.
-                Rectangle playerRect = new Rectangle(
-                        playerPos.pos.x,
-                        playerPos.pos.y,
-                        playerBounds.bounds.getWidth(),
-                        playerBounds.bounds.getHeight());
+            Vector2 playerTilePos = getTileIndexBasedOnPosition(playerCom.getTilePos().x, playerCom.getTilePos().y - 1);
 
 
-                Rectangle blockRect = new Rectangle(
-                        blockPos.pos.x, //- blockBounds.bounds.getWidth()
-                        blockPos.pos.y,
-                        blockBounds.bounds.getWidth() - playerBounds.bounds.getWidth() / 4,
-                        blockBounds.bounds.getHeight());
-
-                //Rectangle: Player and Block = their Bounds + Position.
-
-
-                if (playerRect.overlaps(blockRect)) {
-                    //TODO TEST and set velocity to zero for player
-//                    //Moves Player to what ever side the player is closest to on intersection
-//
-//                    //Which side of the block should we teleport the player to: (Which ever side their the closest too)
-//
-//                    Point leftSideRect = new Point(((int) blockRect.getX()), ((int) (blockRect.getY() / 2)));
-//                    Point rightSideRect = new Point(((int) (blockRect.getX() + blockRect.getWidth())), ((int) (blockRect.getY() / 2)));
-//                    Point topSideRect = new Point(((int) (blockRect.getX() + (blockRect.getWidth() / 2))), ((int) blockRect.getY()));
-//                    Point botSideRect = new Point(((int) (blockRect.getX() + (blockRect.getWidth() / 2))), ((int) (blockRect.getY() + blockRect.getHeight())));
-//
-//                    //Pythagorean theorem - Sees how close the player is to each of the points
-//                    //Each point represents the center point on each of the 4 sides of the rects
-//                    double x1 = leftSideRect.distance(playerPos.pos.x, playerPos.pos.y); //distFromLeftSide
-//                    double x2 = rightSideRect.distance(playerPos.pos.x, playerPos.pos.y); //distFromRightSide
-//                    double x3 = topSideRect.distance(playerPos.pos.x, playerPos.pos.y);//distFromTopSide
-//                    double x4 = botSideRect.distance(playerPos.pos.x, playerPos.pos.y);//distFromBotSide
-//
-//
-//                    //When teleporting a player only adjust their x-axis or their y-axis
-//
-//                    float buffer = 0.1f;
-//
-//
-//                    if (x1 < x2 && x1 < x3 && x1 < x4) { //leftSide = true;
-////                      //Teleport player to LeftSide
-//                        playerPos.pos.set(blockRect.getX() - buffer, playerPos.pos.y, playerPos.pos.z);
-//                        System.out.println("left");
-//
-//
-//                    } else if (x2 < x1 && x2 < x3 && x2 < x4) { //rightSide = true;
-//                        //Teleport player to RightSide
-//                        playerPos.pos.set(blockRect.getX()+blockRect.getWidth() + buffer, playerPos.pos.y, playerPos.pos.z);
-//                        System.out.println("right");
-//
-//
-//                    } else if (x3 < x1 && x3 < x2 && x3 < x4) { //topSide = true;
-//                        //Teleport player to TopSide
-//                        playerPos.pos.set(playerPos.pos.x, blockRect.getY() - buffer, playerPos.pos.z);
-//                        System.out.println("top");
-//
-//                    } else if (x4 < x1 && x4 < x2 && x4 < x3) { //botSide = true;
-//                        //Teleport player to BotSide
-//                        playerPos.pos.set(playerPos.pos.x, blockRect.getY()+blockRect.getHeight() + buffer, playerPos.pos.z);
-//                        System.out.println("bot");
-//
-//                    }
-
-                    if(blockComponent.isSolid()) {
-                        playerPos.pos.set(playerPos.lastPosition); //TODO Uncomment to enable collision between blocks
-                    } else{
-                        blockComponent.setPlayerOverlaps(true);
-                        System.out.println("True");
+            Tile tilePlayerIsOn = null;
+            int index_Row;
+            int index_Col;
+            for (index_Row = 0; index_Row < visibleTiles.size(); index_Row++) {
+                for (index_Col = 0; index_Col < visibleTiles.get(index_Row).size(); index_Col++) {
+                    Tile tile = visibleTiles.get(index_Row).get(index_Col);
+                    Vector2 vector2 = getTileIndexBasedOnPosition(tile.getPOS_X(), tile.getPOS_Y());
+                    if (vector2.x == playerTilePos.x && vector2.y == playerTilePos.y) {
+                        tilePlayerIsOn = tile;
+//                        System.out.println("---------------------------------------------------------------");
+//                        System.out.println("Player Tile Pos: " + playerTilePos.x + " , " + playerTilePos.y);
+//                        System.out.println("Player Pos " + playerCom.getTilePos().x + "  ,  " + playerCom.getTilePos().y);
+//                        System.out.println("index: Row -> Col " + index_Row + "  ,  " + index_Col);
+                        break;
                     }
-                } else {
-                    blockComponent.setPlayerOverlaps(false);
                 }
             }
 
+
+            Vector2 playerAccuratePos = playerCom.getTilePos();
+
+            if (tilePlayerIsOn == null || tilePlayerIsOn.getAllTilesIndexCol() == world.getWorldManager().getAllTilesMaxCol() - 1 ||
+                    tilePlayerIsOn.getAllTilesIndexCol() == 0 ||
+                    tilePlayerIsOn.getAllTilesIndexRow() == world.getWorldManager().getAllTilesMaxRow() - 1 ||
+                    tilePlayerIsOn.getAllTilesIndexRow() == 0) {
+                System.out.println("Outside Map");
+            } else {
+                Vector2 deltaPos = new Vector2((playerAccuratePos.x - (int) playerAccuratePos.x), playerAccuratePos.y - ((int) playerAccuratePos.y)); //Converts playerAccuratePos to range between 0-1
+
+                Tile[][] allTiles = world.getWorldManager().getAllTiles();
+                //------------------X Axis Collision Checking-----------------------------------------
+
+                //------------------Check Collision To the Left---------------------------------------
+//                System.out.println(deltaPos.y + "  :  " + PlayerComponent.HEIGHT / 2);
+                if (deltaPos.x < PlayerComponent.WIDTH / 2) {
+                    //Tiles to the Left of the player
+                    Tile centerLeft = allTiles[tilePlayerIsOn.getAllTilesIndexRow()][tilePlayerIsOn.getAllTilesIndexCol() - 1]; //visibleTiles.get(((int) visibleTileIndexPlayerIsOn.x)).get(((int) visibleTileIndexPlayerIsOn.y)-1); //
+                    Tile topLeft = allTiles[tilePlayerIsOn.getAllTilesIndexRow() - 1][tilePlayerIsOn.getAllTilesIndexCol() - 1]; //visibleTiles.get(((int) visibleTileIndexPlayerIsOn.x)-1).get(((int) visibleTileIndexPlayerIsOn.y)-1);
+                    Tile botLeft = allTiles[tilePlayerIsOn.getAllTilesIndexRow() + 1][tilePlayerIsOn.getAllTilesIndexCol() - 1]; //visibleTiles.get(((int) visibleTileIndexPlayerIsOn.x)+1).get(((int) visibleTileIndexPlayerIsOn.y)-1);//
+                    boolean collision = false;
+                    //TopLeft
+                    if (topLeft.getEntity() != null) {
+
+                        if (topLeft.getEntity().getComponent(BlockComponent.class).isSolid()) { //(centerLeft.getID() == Tile.STONE_BLOCK)
+
+                            if (deltaPos.y > PlayerComponent.HEIGHT / 2) {
+                                collision = true;
+                            }
+                        }
+                    }
+                    //CenterLeft
+                    if (centerLeft.getEntity() != null) {
+                        if (centerLeft.getEntity().getComponent(BlockComponent.class) != null) {
+                        }
+                        if (centerLeft.getEntity().getComponent(BlockComponent.class).isSolid()) { //(centerLeft.getID() == Tile.STONE_BLOCK)
+                            collision = true;
+                        } else {
+                        }
+                    }
+                    //BotLeft
+                    if (botLeft.getEntity() != null) {
+                        if (botLeft.getEntity().getComponent(BlockComponent.class).isSolid()) { //(centerLeft.getID() == Tile.STONE_BLOCK)
+                            if (deltaPos.y < PlayerComponent.HEIGHT / 2) {
+                                collision = true;
+                            }
+                        }
+                    }
+
+                    //On Event of collision handle outcome
+                    if (collision) {
+                        Vector2 newPosition = playerCom.getTilePos();
+                        newPosition.x = ((int) newPosition.x);//Round position to whole number
+                        newPosition.x += (PlayerComponent.WIDTH / 2) - 0.5f;
+                        //Change Players Position to just outside the collision zone.
+                        //The player will now be as close to they can get without actually colliding with the solid object
+                        //The amount I will change the player's position be the same as in the condition.
+                        playerPos.pos.x = newPosition.x;
+                    }
+
+                }
+
+                //------------------Check Collision To the Right---------------------------------------
+                if (deltaPos.x > 1 - (PlayerComponent.WIDTH / 2)) {
+                    //Tiles to the Right of the player
+                    Tile centerRight = allTiles[tilePlayerIsOn.getAllTilesIndexRow()][tilePlayerIsOn.getAllTilesIndexCol() + 1];
+                    Tile topRight = allTiles[tilePlayerIsOn.getAllTilesIndexRow() - 1][tilePlayerIsOn.getAllTilesIndexCol() + 1];
+                    Tile botRight = allTiles[tilePlayerIsOn.getAllTilesIndexRow() + 1][tilePlayerIsOn.getAllTilesIndexCol() + 1];
+
+                    boolean collision = false;
+                    //TopRight
+                    if (topRight.getEntity() != null) {
+                        if (topRight.getEntity().getComponent(BlockComponent.class).isSolid()) { //(centerLeft.getID() == Tile.STONE_BLOCK)
+                            if (deltaPos.y > PlayerComponent.HEIGHT / 2) {
+                                collision = true;
+                            }
+                        }
+                    }
+                    //CenterRight
+                    if (centerRight.getEntity() != null) {
+                        if (centerRight.getEntity().getComponent(BlockComponent.class).isSolid()) { //(centerLeft.getID() == Tile.STONE_BLOCK)
+                            collision = true;
+                        }
+                    }
+                    //BotRight
+                    if (botRight.getEntity() != null) {
+                        if (botRight.getEntity().getComponent(BlockComponent.class).isSolid()) { //(centerLeft.getID() == Tile.STONE_BLOCK)
+                            if (deltaPos.y < PlayerComponent.HEIGHT / 2) {
+                                collision = true;
+                            }
+                        }
+                    }
+
+                    //On Event of collision handle outcome
+                    if (collision) {
+                        Vector2 newPosition = playerCom.getTilePos();//Round position to whole number
+                        newPosition.x = ((int) newPosition.x);
+                        newPosition.x += (PlayerComponent.WIDTH / 2);
+                        //Change Players Position to just outside the collision zone.
+                        //The player will now be as close to they can get without actually colliding with the solid object
+                        //The amount I will change the player's position be the same as in the condition.
+                        playerPos.pos.x = newPosition.x;
+                    }
+
+
+                }
+
+                //------------------COMPLETED X Axis Collision Checking -----------------------------------------
+
+
+                //TODO Check Collision To the Top:
+
+
+                //TODO Check Collision To the Bot:
+
+            }
+            //The Players Total width is 0.5 (giving us a radius of 0.25 on the x-axis.
+            //This means if the Players position to the center of the tile is <0.25 or >0.75 the player is overlapping the neighbor square
+            //In the event of this we must check if the neighboring square is solid or hollow.
+            //If its hollow nothing needs to be done unless (its a shop/interactive hollow tile) - Adding in future
+            //If its solid, simply set the players x-axis to 0.25 or 0.75.
+
+
+            // (This can be optimised so only check for boxes which are active)
+            //loop through all blocks checking for a collision between player and boxes
+//            for (int j = 0; j < blocks.size(); j++) {
+//                Entity block = blocks.get(j);
+//
+//                BoundsComponent blockBounds = bm.get(block);
+//                TransformComponent blockPos = tm.get(block);
+//                BlockComponent blockComponent = bc.get(block);
+//
+//                //test for collision
+//                //Rectangle: Player and Block = their Bounds + Position.
+//                Rectangle playerRect = new Rectangle(
+//                        playerPos.pos.x,
+//                        playerPos.pos.y,
+//                        playerBounds.bounds.getWidth(),
+//                        playerBounds.bounds.getHeight());
+//
+//
+//                Rectangle blockRect = new Rectangle(
+//                        blockPos.pos.x, //- blockBounds.bounds.getWidth()
+//                        blockPos.pos.y,
+//                        blockBounds.bounds.getWidth() - playerBounds.bounds.getWidth() / 4,
+//                        blockBounds.bounds.getHeight());
+//
+//                //Rectangle: Player and Block = their Bounds + Position.
+//
+//                System.out.println("2");
+//
+//                if (playerRect.overlaps(blockRect)) {
+//                    blockComponent.setRemove(true);
+//                    System.out.println("1");
+//
+//                }
+//            }
+
         }
+    }
+
+    private Vector2 getTileIndexBasedOnPosition(float posX, float posY) {
+        int row = ((int) (posY - GameWorld.EDGE_NORTH) * -1);
+        int col = ((int) (posX - GameWorld.EDGE_WEST));
+
+        return new Vector2(col, row);
     }
 
 }

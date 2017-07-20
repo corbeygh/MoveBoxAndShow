@@ -68,25 +68,25 @@ public class ShopSystem extends IteratingSystem {
 
             return;
         }
-
-        if (bc.get(entity).isPlayerOverlaps()) {
-            MovementComponent playerMov = mm.get(player);
-            TransformComponent position = tm.get(player);
-            System.out.println("Open Shop :D");
-
-            if(position.pos.x == position.lastPosition.x && position.pos.y ==position.lastPosition.y){
-
-//                switch (sc.get(entity).getShopID()){
-//                    case ShopComponent.ORE_SHOP_ID:
-//                        openMiningShop();
-//                        break;
-//                    case ShopComponent.PICKAXE_SHOP_ID:
-////                        openPickaxeShop();
-//                        break;
-//                }
-            }
-
-        }
+//
+//        if (bc.get(entity).isPlayerOverlaps()) {
+//            MovementComponent playerMov = mm.get(player);
+//            TransformComponent position = tm.get(player);
+//            System.out.println("Open Shop :D");
+//
+//            if(position.pos.x == position.lastPosition.x && position.pos.y ==position.lastPosition.y){
+//
+////                switch (sc.get(entity).getShopID()){
+////                    case ShopComponent.ORE_SHOP_ID:
+////                        openMiningShop();
+////                        break;
+////                    case ShopComponent.PICKAXE_SHOP_ID:
+//////                        openPickaxeShop();
+////                        break;
+////                }
+//            }
+//
+//        }
 
         //TODO Next Goal: Only make It say Open Shop if player isn't moving, auto close if player isn't moving
 

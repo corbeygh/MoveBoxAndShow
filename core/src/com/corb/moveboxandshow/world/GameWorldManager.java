@@ -31,8 +31,8 @@ public class GameWorldManager extends IteratingSystem {
     private Tile[][] allTiles;
 
     private LinkedList<LinkedList<Tile>> visibleTiles;
-    private int drawDistanceRow = 16;
-    private int drawDistanceCol = 16;
+    public final static int drawDistanceRow = 16;
+    public final static int drawDistanceCol = 16;
 
     private Entity player;
     private ComponentMapper<PlayerComponent> pm;
@@ -78,9 +78,9 @@ public class GameWorldManager extends IteratingSystem {
                 words.add(numbers);
             }
 
-            for(int i = 0; i< words.size(); i++){
-                for(int j = 0; j<words.get(0).length; j++){
-                    groundLayer[(i*words.get(0).length)+j] = Integer.valueOf(words.get(i)[j]);
+            for (int i = 0; i < words.size(); i++) {
+                for (int j = 0; j < words.get(0).length; j++) {
+                    groundLayer[(i * words.get(0).length) + j] = Integer.valueOf(words.get(i)[j]);
                 }
             }
 
@@ -95,12 +95,13 @@ public class GameWorldManager extends IteratingSystem {
                     float y = GameWorld.EDGE_NORTH - i;
                     int tileID;
 
-                    if(j==0 || j == allTiles[0].length-1 || i== allTiles.length-1) {
-                        //All Sides and bottoms are walls.
+
+                    if (j <= 1 || j >= allTiles[0].length - 2 || i >= allTiles.length - 2) {
+                        //All Sides and bottoms are walls. (2x Thick)
                         tileID = Tile.STONE_BLOCK;
 
-                    }else if( (j == 10 || j==11 || j == 13 || ( i == allTiles.length-2 && (j > 9 && j < 14))) && i > GameWorld.WORLD_GROUND_LEVEL-2 ){//TODO Remove ONLY FOR TESTING
-                            tileID = Tile.MINED_BLOCK;
+                    } else if ((j == 10 || j == 11 || j == 13 || (i == allTiles.length - 2 && (j > 9 && j < 14))) && i > GameWorld.WORLD_GROUND_LEVEL - 2) {//TODO Remove ONLY FOR TESTING
+                        tileID = Tile.MINED_BLOCK;
 
                     } else if ((i * allTiles[i].length) + j < groundLayer.length) {
 
@@ -111,8 +112,10 @@ public class GameWorldManager extends IteratingSystem {
                         //The deeper you are the more chance there is of you getting better resources.
                         tileID = Tile.DIRT_BLOCK;
                     }
-                    System.out.printf(tileID+" ");
-                    if(j == allTiles.length-1 )System.out.println("");
+                    System.out.printf(tileID + " ");
+                    if (j == allTiles.length - 1) System.out.println("");
+
+                    if (j == 3 && i == 3) tileID = Tile.STONE_BLOCK; //TODO Remove Line
 
                     allTiles[i][j] = new Tile(tileID, x, y, i, j);
                 }
@@ -344,6 +347,7 @@ public class GameWorldManager extends IteratingSystem {
             Tile tile = iterator.next();
             addToEntityRemovalQueue(tile);
             tile.setEntityToNull();
+
         }
     }
 
@@ -463,5 +467,21 @@ public class GameWorldManager extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 
+    }
+
+    public LinkedList<LinkedList<Tile>> getVisibleTiles() {
+        return visibleTiles;
+    }
+
+    public int getAllTilesMaxCol() {
+        return allTiles[0].length;
+    }
+
+    public int getAllTilesMaxRow() {
+        return allTiles.length;
+    }
+
+    public Tile[][] getAllTiles() {
+        return allTiles;
     }
 }
