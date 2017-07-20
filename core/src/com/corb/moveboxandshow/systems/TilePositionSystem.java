@@ -35,7 +35,7 @@ public class TilePositionSystem extends IteratingSystem {
 
         int tileSize = tpm.get(entity).getTILE_SIZE();
 
-        tilePos.set((pos.x+0.5f)/tileSize,(pos.y+0.5f)/tileSize);//Adding 0.5f Might fix the round issue... not sure (this needs testing)
+        tilePos.set((pos.x+0.5f)/tileSize,(pos.y+0.5f)/tileSize);
 
     }
 }

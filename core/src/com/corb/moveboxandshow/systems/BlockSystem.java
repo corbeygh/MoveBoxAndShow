@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.corb.moveboxandshow.components.BlockComponent;
+import com.corb.moveboxandshow.components.CollisionComponent;
 import com.corb.moveboxandshow.components.RemovableComponent;
 import com.corb.moveboxandshow.components.UserInputComponent;
 import com.corb.moveboxandshow.components.MovementComponent;
@@ -18,7 +19,8 @@ import com.corb.moveboxandshow.components.StateComponent;
 public class BlockSystem extends IteratingSystem {
 
     private static final Family family = Family.all(BlockComponent.class,
-            RemovableComponent.class).get();
+            RemovableComponent.class,
+            CollisionComponent.class).get();
 
     private ComponentMapper<BlockComponent> bm;
     private ComponentMapper<RemovableComponent> rm;
@@ -26,7 +28,7 @@ public class BlockSystem extends IteratingSystem {
     public BlockSystem() {
         super(family);
         bm = ComponentMapper.getFor(BlockComponent.class);
-        rm = ComponentMapper.getFor(RemovableComponent.class);//kk
+        rm = ComponentMapper.getFor(RemovableComponent.class);
     }
 
     @Override

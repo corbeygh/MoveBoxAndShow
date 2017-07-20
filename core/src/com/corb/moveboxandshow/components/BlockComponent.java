@@ -14,7 +14,6 @@ public class BlockComponent implements Component {
 
     private boolean remove = false;
     private boolean solid = true;
-    private boolean playerOverlaps = false;
 
     private int indexRow = -1;
     private int indexCol = -1;
@@ -50,13 +49,5 @@ public class BlockComponent implements Component {
 
     public void setSolid(boolean solid) {
         this.solid = solid;
-    }
-
-    public boolean isPlayerOverlaps() {
-        return playerOverlaps;
-    }
-
-    public void setPlayerOverlaps(boolean playerOverlaps) {
-        this.playerOverlaps = playerOverlaps;
     }
 }

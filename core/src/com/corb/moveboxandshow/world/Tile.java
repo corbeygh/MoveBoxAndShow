@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.corb.moveboxandshow.Assets;
 
 /**
- * Created by Calvin on 26/03/2017.
+ * Could also hold variables if there is an item on the Tile, this would work well with the current code in the collision system.
  */
 
 public class Tile {

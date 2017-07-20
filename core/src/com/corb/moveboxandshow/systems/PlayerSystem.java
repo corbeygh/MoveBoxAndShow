@@ -58,7 +58,6 @@ public class PlayerSystem extends IteratingSystem {
         StateComponent state = sm.get(entity);
         MovementComponent mov = mm.get(entity);
         TilePositionComponent tilePos = tpm.get(entity);
-//        System.out.println("x "+pos.pos.x+ " y "+pos.pos.y);
 
         //Based on what state the player is in process their input:
         if (userInput.moveLeft) {
